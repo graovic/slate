@@ -156,11 +156,14 @@ Authorization: eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE0MzAzMjY2NzQsImdy
 # Get user profile information
 
 
-<pre>
-GET /people/<:userId>
-</pre>
+GET /v1/users/<:userId>
 
-<pre>
+
+```shell
+curl -X GET http://apiserver.local:8080/v1/users/55341b418716380451000003
+```
+
+```json
 {
   "ID": "55341b418716380451000003",
   "username": "test1",
@@ -191,14 +194,22 @@ GET /people/<:userId>
     "aboutme": "testing editing"
   }
 }
+```
 
-</pre>
 
 # Update user information
 
 
 PUT /users/<:userId>
-Authorization: "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE0MzAzMjY2NzQsImdyb3VwcyI6bnVsbCwidXNlcklkIjoiNTUzNGZiN2MzZWEyNGNkNzQ5MDAwMDAxIiwidXNlcm5hbWUiOiJ0ZXN0MSJ9.NeP7hForLtZttrSMWccHjSBFwUCepltJIhoT8q16L91YdePralWhWyAkTcKvsEraK9DOtiw3B5CR4kxvYnWupVexqUH-SeRn6-p33fEi8l5v4C3G44a109TpA90qxO-CxLeHUbwIFJDLEcr_SkZokJAIiSTvqcdwFFeuVNycy30"
+
+
+```shell
+
+PUT /v1/users/55341b418716380451000003 HTTP/1.1
+Host: 54.69.78.153:8080
+Authorization: eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE0MzEwMTI5MDYsInVzZXJJZCI6IjU1MmVlN2FiM2VhMjRjZmNlYzAwMDAwMSIsInVzZXJuYW1lIjoiZ3Jhb3ZpYzEzMzQ1IiwidXNlcnR5cGUiOjB9.BhcBY1PwyF2bZoxHE3YqfXEb_GTvrHeToSLRz9zDrnKaWv4azWNiK1f28JKq0uXLStqZp53qdZrxV2gSBWgxeZICW94XYbYcyTR73gmkyIvEXzogAryXxZpQzuOWnLUAdGHDcQDN2Ui-h5_irfCWmBaAwNS1maALoimU3US5WKQ
+Content-Type: application/json
+Cache-Control: no-cache
 
 {
 "email": "test2@fincore.com",
@@ -215,6 +226,7 @@ Authorization: "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE0MzAzMjY2NzQsImd
     "aboutme": "testing editing"
   }
 }
+```
 
 # Facebook integration
 
@@ -222,14 +234,20 @@ Facebook integration is performed using client side facebook api.
 On the website, user is logging into facebook using javascript jdk; after successfully login, callback function from javascript sends facebook access token and fbuserid to gamehub api.
 
 POST /fbapi
+
+```shell
+POST /v1/users/55341b418716380451000003 HTTP/1.1
+Host: 54.69.78.153:8080
 {
   "fbuser": "facebookuserid",
   "access_token": "fb access token"
 }
 
-Response from server:
+```
 
-<pre>
+>Response from server:
+
+```json
 {
 "hmac": "J_s0VI3BAzLEHi8RCP00BcmWQ3OO5ynRFedG2fafQWU=",
 "msg": "success",
@@ -237,30 +255,55 @@ Response from server:
 "userid": "5534fb7c3ea24cd749000001",
 "username": "facebook username" 
 }
-</pre>
+```
 
 
 
-### Password management
+# Password management
 
-####Password change:
+## Password change:
 
-POST /{userid}/pwdchange
+User can change your own password
+POST /v1/users/{userid}/pwdchange
+
+```shell
+
+
+POST /v1/users/55341b418716380451000003/pwdchange HTTP/1.1
+Host: 54.69.78.153:8080
+Authorization: eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE0MzEwMTI5MDYsInVzZXJJZCI6IjU1MmVlN2FiM2VhMjRjZmNlYzAwMDAwMSIsInVzZXJuYW1lIjoiZ3Jhb3ZpYzEzMzQ1IiwidXNlcnR5cGUiOjB9.BhcBY1PwyF2bZoxHE3YqfXEb_GTvrHeToSLRz9zDrnKaWv4azWNiK1f28JKq0uXLStqZp53qdZrxV2gSBWgxeZICW94XYbYcyTR73gmkyIvEXzogAryXxZpQzuOWnLUAdGHDcQDN2Ui-h5_irfCWmBaAwNS1maALoimU3US5WKQ
 {
   "oldpassword": "users old password",
   "password1": "first new password",
   "password2": "second new password"
 }
+```
 
 If request is successful, user password will be changed.
 
-####Password reset:
+
+## Password reset:
+
 
 If users forget their password, they can send password change request to the url:
 
 GET /pwdreset/<user_email_address>
 
-After user submits the data, system will send them token for password resetting via email.
+```shell
+GET /pwdreset/testmail@testmaildomain.com
+```
+
+>response from server
+
+```json
+{"msg":"ok"}
+```
+
+After user submit request, system will send them token for password resetting via email. User needs to submit password reset token + new passwords.
+
+In this request, password token is the token received by email, password1 and password2 are new passwords.
+
+```shell
 
 POST /pwdresetupdate
 {
@@ -268,6 +311,4 @@ POST /pwdresetupdate
   "password1": "password1",
   "password2": "password2"  
 }
-
-In this request, password token is the token received by email, password1 and password2 are new passwords.
 
