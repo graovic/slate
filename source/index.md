@@ -1,14 +1,12 @@
 ---
-title: API Reference
+title: Users API
 
 language_tabs:
   - shell
-  - ruby
-  - python
+
 
 toc_footers:
-  - <a href='#'>Sign Up for a Developer Key</a>
-  - <a href='http://github.com/tripit/slate'>Documentation Powered by Slate</a>
+  - <a href='#'>GameHub API documentation</a>
 
 includes:
   - errors
@@ -16,153 +14,260 @@ includes:
 search: true
 ---
 
-# Introduction
+# Users management and authentication:
 
-Welcome to the Kittn API! You can use our API to access Kittn API endpoints, which can get information on various cats, kittens, and breeds in our database.
+##End user registration:
 
-We have language bindings in Shell, Ruby, and Python! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
 
-This example API documentation page was created with [Slate](http://github.com/tripit/slate). Feel free to edit it and use it as a base for your own API's documentation.
+Request Type: <b> POST </b> </br>
+URL: /u/registration 
 
-# Authentication
+| Field    | Data type  | additional requirements | 
+|----------|------------|-------------------------|
+| username | string     | - |
+| email    | string     | valid email address | 
+| createAt
 
-> To authorize, use this code:
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-```
-
-```shell
-# With shell, you can just pass the correct header with each request
-curl "api_endpoint_here"
-  -H "Authorization: meowmeowmeow"
-```
-
-> Make sure to replace `meowmeowmeow` with your API key.
-
-Kittn uses API keys to allow access to the API. You can register a new Kittn API key at our [developer portal](http://example.com/developers).
-
-Kittn expects for the API key to be included in all API requests to the server in a header that looks like the following:
-
-`Authorization: meowmeowmeow`
-
-<aside class="notice">
-You must replace `meowmeowmeow` with your personal API key.
-</aside>
-
-# Kittens
-
-## Get All Kittens
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get()
-```
-
-```shell
-curl "http://example.com/api/kittens"
-  -H "Authorization: meowmeowmeow"
-```
-
-> The above command returns JSON structured like this:
-
-```json
-[
-  {
-    "id": 1,
-    "name": "Fluffums",
-    "breed": "calico",
-    "fluffiness": 6,
-    "cuteness": 7
-  },
-  {
-    "id": 2,
-    "name": "Isis",
-    "breed": "unknown",
-    "fluffiness": 5,
-    "cuteness": 10
-  }
-]
-```
-
-This endpoint retrieves all kittens.
-
-### HTTP Request
-
-`GET http://example.com/kittens`
-
-### Query Parameters
-
-Parameter | Default | Description
---------- | ------- | -----------
-include_cats | false | If set to true, the result will also include cats.
-available | true | If set to false, the result will include kittens that have already been adopted.
-
-<aside class="success">
-Remember — a happy kitten is an authenticated kitten!
-</aside>
-
-## Get a Specific Kitten
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get(2)
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get(2)
-```
-
-```shell
-curl "http://example.com/api/kittens/3"
-  -H "Authorization: meowmeowmeow"
-```
-
-> The above command returns JSON structured like this:
-
-```json
+<pre>
+URL : /u/registration 
+Application-Type: "application/json"
+POST: 
 {
-  "id": 2,
-  "name": "Isis",
-  "breed": "unknown",
-  "fluffiness": 5,
-  "cuteness": 10
+  "username":"uniqueusername",
+  "firstname": "Ashley",
+  "lastname": "Cline",
+  "password1": "simpletestpassword",
+  "password2": "simpletestpassword",
+  "gender":"female",
+  "year": 1972,
+  "day": 11,
+  "month": 2,
+  "address": "7805 Southcrest Parkway"
+  "country": "USA",
+  "email": "Ashley.Cline@gmail.com"
+  "aboutme": "info about user",
+  "headline" : "more information"
 }
-```
+</pre>
 
-This endpoint retrieves a specific kitten.
+| Field     | Data type  |  Additional requirements | 
+|-----------|------------|--------------------------|
+| username  | string     |  unique  | 
+| firstname  |  string | -   |  
+| lastname  |  string  | -   |
+| password1 | string integer special character | same as password2 |
+| password2 |   string integer special character | same as password1|
+| gender |  string | "male"|"female" |
+| year  | integer | 1900 > y < 2005, valid day, month, year |
+| day  | integer | 1 >=  d <= 31| 
+| month | integer | 1 >= m <= 12 |
+| address | string | - |
+| country | string | One of the countries from country list http://www.textfixer.com/resources/dropdowns/country-dropdown-iso-html.txt |
+| email | string | valid email address, this mail address will be used for sending password reset mail and registration confirmation token |
+| aboutme | string | info about user used in profile page | 
+| headline | string |  - |
 
-<aside class="warning">If you're not using an administrator API key, note that some kittens will return 403 Forbidden if they are hidden for admins only.</aside>
 
-### HTTP Request
+> Response:
 
-`GET http://example.com/kittens/<ID>`
+201 - if request is successful, mail is sent to the user with token id,
+ 
+400 - if some of the requirements are not satisfied
 
-### URL Parameters
+User will receive email with token id
+<pre>
+Registration token /registration/confirm/<:tokeid>
+</pre>
 
-Parameter | Description
---------- | -----------
-ID | The ID of the cat to retrieve
+
+In final version, the content of this mail will be changed to point to the real website, that will, in background, send tokenid to the api. In case of mobile client, clients can send GET request directly to the API server.
+
+Token is valid in next 24 hours. If user doesn't provide token confirmation in that period, registration request expires; user data will be removed from database, and token become invalid. After that period user needs to register again.
+
+
+When server receives tokenId in valid time frame, server will enable that user. After that user can login on api.
+
+
+If user doesn't receive email address from the system, user can request resending token, by sending request on 
+
+<pre>
+/registration/resend/<:email>
+</pre>
+
+If email address belongs to user which isn't enabled, mail service will send them mail with registration token.
+
+If user requests multiple time url 
+
+<pre>
+/registration/confirm/<:tokenid>
+</pre>
+
+user will receive notification that this token is already verified.
+
+
+# User authentication
+## User password authentication
+
+
+Endpoint
+
+URL: /auth/login/simple <br>
+Method: POST
+
+<pre>
+URL : /auth/login/simple
+Application-Type: "application/json"
+POST: 
+{
+  "username": "test1",
+  "password": "testpassword"
+}
+</pre>
+
+Server Response if user/password combination is correct
+
+<pre>
+
+{
+"hmac": "J_s0VI3BAzLEHi8RCP00BcmWQ3OO5ynRFedF4fIfQWU=",
+"msg": "success",
+"token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE0MzAzMjY2NzQsImdyb3VwcyI6bnVsbCwidXNlcklkIjoiNTUzNGZiN2MzZWEyNGNkNzQ5MDAwMDAxIiwidXNlcm5hbWUiOiJ0ZXN0MSJ9.NeP7hForLtZttrSMWccHjSBFwUCepltJIhoT8q16L91YdePralWhWyAkTcKvsEraK9DOtiw3B5CR4kxvYnWupVexqUH-SeRn6-p33fEi8l5v4C3G44a109TpA90qxO-CxLeHUbwIFJDLEcr_SkZokJAIiSTvqcdwFFeuVNycy30",
+"userid": "5534fb7c3ea24cd749000001",
+"username": "test1" 
+}
+</pre>
+
+
+| Field     | Description                                               |
+| ----------| ----------------------------------------------------------|
+| hmac      | Used for shoutz to send hmac token through url parameters |
+| msg       | sucesss                                                   |
+| token     | jwt token, (http://jwt.io) you can check token content    |
+| userid    | unique user id                                            |
+| username  | username                                                  |
+
+
+For every other request, user needs to send token data in http Authorization header
+
+<pre>
+Authorization: eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE0MzAzMjY2NzQsImdyb3VwcyI6bnVsbCwidXNlcklkIjoiNTUzNGZiN2MzZWEyNGNkNzQ5MDAwMDAxIiwidXNlcm5hbWUiOiJ0ZXN0MSJ9.NeP7hForLtZttrSMWccHjSBFwUCepltJIhoT8q16L91YdePralWhWyAkTcKvsEraK9DOtiw3B5CR4kxvYnWupVexqUH-SeRn6-p33fEi8l5v4C3G44a109TpA90qxO-CxLeHUbwIFJDLEcr_SkZokJAIiSTvqcdwFFeuVNycy30
+</pre>
+
+# Get user profile information
+
+
+<pre>
+GET /people/<:userId>
+</pre>
+
+<pre>
+{
+  "ID": "55341b418716380451000003",
+  "username": "test1",
+  "email": "test2@fincore.com",
+  "_created": "0001-01-01T00:00:00Z",
+  "_updated": "0001-01-01T00:00:00Z",
+  "acl": 0,
+  "fbuser": false,
+  "fbuserid": "",
+  "usertype": 0,
+  "tickets": 100,
+  "coins": 0,
+  "oldslingo": false,
+  "enabled": true,
+  "resettoken": "",
+  "profile": {
+    "firstname": "",
+    "lastname": "",
+    "fbavatar": "",
+    "lavatar": "",
+    "gender": "male",
+    "year": 2000,
+    "month": 1,
+    "day": 1,
+    "country": "",
+    "address": "test address",
+    "headline": "",
+    "aboutme": "testing editing"
+  }
+}
+
+</pre>
+
+# Update user information
+
+
+PUT /users/<:userId>
+Authorization: "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE0MzAzMjY2NzQsImdyb3VwcyI6bnVsbCwidXNlcklkIjoiNTUzNGZiN2MzZWEyNGNkNzQ5MDAwMDAxIiwidXNlcm5hbWUiOiJ0ZXN0MSJ9.NeP7hForLtZttrSMWccHjSBFwUCepltJIhoT8q16L91YdePralWhWyAkTcKvsEraK9DOtiw3B5CR4kxvYnWupVexqUH-SeRn6-p33fEi8l5v4C3G44a109TpA90qxO-CxLeHUbwIFJDLEcr_SkZokJAIiSTvqcdwFFeuVNycy30"
+
+{
+"email": "test2@fincore.com",
+"profile": {
+    "firstname": "",
+    "lastname": "",
+    "gender": "male",
+    "year": 2000,
+    "month": 1,
+    "day": 1,
+    "country": "",
+    "address": "test address",
+    "headline": "",
+    "aboutme": "testing editing"
+  }
+}
+
+# Facebook integration
+
+Facebook integration is performed using client side facebook api. 
+On the website, user is logging into facebook using javascript jdk; after successfully login, callback function from javascript sends facebook access token and fbuserid to gamehub api.
+
+POST /fbapi
+{
+  "fbuser": "facebookuserid",
+  "access_token": "fb access token"
+}
+
+Response from server:
+
+<pre>
+{
+"hmac": "J_s0VI3BAzLEHi8RCP00BcmWQ3OO5ynRFedG2fafQWU=",
+"msg": "success",
+"token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE0MzAzMjY2NzQsImdyb3VwcyI6bnVsbCwidXNlcklkIjoiNTUzNGZiN2MzZWEyNGNkNzQ5MDAwMDAxIiwidXNlcm5hbWUiOiJ0ZXN0MSJ9.NeP7hForLtZttrSMWccHjSBFwUCepltJIhoT8q16L91YdePralWhWyAkTcKvsEraK9DOtiw3B5CR4kxvYnWupVexqUH-SeRn6-p33fEi8l5v4C3G44a109TpA90qxO-CxLeHUbwIFJDLEcr_SkZokJAIiSTvqcdwFFeuVNycy30",
+"userid": "5534fb7c3ea24cd749000001",
+"username": "facebook username" 
+}
+</pre>
+
+
+
+### Password management
+
+####Password change:
+
+POST /{userid}/pwdchange
+{
+  "oldpassword": "users old password",
+  "password1": "first new password",
+  "password2": "second new password"
+}
+
+If request is successful, user password will be changed.
+
+####Password reset:
+
+If users forget their password, they can send password change request to the url:
+
+GET /pwdreset/<user_email_address>
+
+After user submits the data, system will send them token for password resetting via email.
+
+POST /pwdresetupdate
+{
+  "pwdtoken": "password token",
+  "password1": "password1",
+  "password2": "password2"  
+}
+
+In this request, password token is the token received by email, password1 and password2 are new passwords.
 
