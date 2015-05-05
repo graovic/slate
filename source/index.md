@@ -18,7 +18,7 @@ search: true
 
 ##End user registration:
 
-
+Server: 54.69.78.153:8080
 Request Type: <b> POST </b> </br>
 URL: /u/registration 
 
@@ -29,6 +29,7 @@ URL: /u/registration
 | createAt
 
 <pre>
+Server: 54.69.78.153:8080
 URL : /u/registration 
 Application-Type: "application/json"
 POST: 
@@ -111,10 +112,12 @@ user will receive notification that this token is already verified.
 
 Endpoint
 
+Server: 54.69.78.153:8080
 URL: /auth/login/simple <br>
 Method: POST
 
 <pre>
+Server: 54.69.78.153:8080
 URL : /auth/login/simple
 Application-Type: "application/json"
 POST: 
@@ -155,7 +158,7 @@ Authorization: eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE0MzAzMjY2NzQsImdy
 
 # Get user profile information
 
-
+Server: 54.69.78.153:8080
 GET /v1/users/<:userId>
 
 
@@ -199,7 +202,7 @@ curl -X GET http://apiserver.local:8080/v1/users/55341b418716380451000003
 
 # Update user information
 
-
+Server: 54.69.78.153:8080
 PUT /users/<:userId>
 
 
@@ -233,6 +236,7 @@ Cache-Control: no-cache
 Facebook integration is performed using client side facebook api. 
 On the website, user is logging into facebook using javascript jdk; after successfully login, callback function from javascript sends facebook access token and fbuserid to gamehub api.
 
+Server: 54.69.78.153:8080
 POST /fbapi
 
 ```shell
@@ -264,6 +268,8 @@ Host: 54.69.78.153:8080
 ## Password change:
 
 User can change your own password
+
+Server: 54.69.78.153:8080
 POST /v1/users/{userid}/pwdchange
 
 ```shell
@@ -287,6 +293,7 @@ If request is successful, user password will be changed.
 
 If users forget their password, they can send password change request to the url:
 
+Server: 54.69.78.153:8080
 GET /pwdreset/<user_email_address>
 
 ```shell
@@ -303,6 +310,8 @@ After user submit request, system will send them token for password resetting vi
 
 In this request, password token is the token received by email, password1 and password2 are new passwords.
 
+Server: 54.69.78.153:8080
+
 ```shell
 
 POST /pwdresetupdate
@@ -312,3 +321,4 @@ POST /pwdresetupdate
   "password2": "password2"  
 }
 ```
+slate
