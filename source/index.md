@@ -191,7 +191,7 @@ curl -X GET http://apiserver.local:8080/v1/users/55341b418716380451000003
     "country": "",
     "address": "test address",
     "headline": "",
-    "aboutme": "testing editing"
+    "aboutme": "test data"
   }
 }
 ```
@@ -236,7 +236,7 @@ On the website, user is logging into facebook using javascript jdk; after succes
 POST /fbapi
 
 ```shell
-POST /v1/users/55341b418716380451000003 HTTP/1.1
+POST /fbapi HTTP/1.1
 Host: 54.69.78.153:8080
 {
   "fbuser": "facebookuserid",
@@ -311,4 +311,4 @@ POST /pwdresetupdate
   "password1": "password1",
   "password2": "password2"  
 }
-
+```
