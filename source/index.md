@@ -322,3 +322,34 @@ POST /pwdresetupdate
 }
 ```
 slate
+
+
+## Friend requests:
+
+```shell
+
+POST /friendrequest/sent/{userid}
+{}
+
+```
+
+## Get all friend request:
+
+```shell
+GET /friendrequest/
+```
+
+
+## Delete friend requests:
+
+```shell
+DELETE /friendrequest/{requestid}
+```
+
+## Confirm friend requests:
+
+```shell
+GET friendsrequest/confirm/{requestid}
+```
+
+
